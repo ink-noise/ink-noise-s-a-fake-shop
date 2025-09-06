@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ink noise的小卖铺</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <!-- 顶部 -->
+  <header class="header">
+    <h1>ink noise的小卖铺</h1>
+    <div class="header-controls">
+      <button id="themeToggle" class="btn-icon">🌙</button>
+      <button id="logoutBtn" class="btn-icon" style="display:none;">🚪</button>
+      <span id="moneyBar">💰<span id="moneyCount">0</span></span>
+    </div>
+  </header>
+
+  <!-- 筛选 -->
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="all">全部</button>
+    <button class="filter-btn" data-filter="official">官方货</button>
+    <button class="filter-btn" data-filter="player">玩家货</button>
+  </div>
+
+  <!-- 商品区 -->
+  <main class="main-content" id="productsGrid"></main>
+
+  <!-- 固定购物车 -->
+  <div id="fixedCart" class="fixed-cart">
+    <span id="cartEmoji">🛒</span>
+    <span id="fixedCount">0</span>
+  </div>
+
+  <!--  footer  -->
+  <footer class="footer">
+    <button id="joinGroupBtn" class="btn-special">加入我的群打工吧（不是）</button>
+    <button id="customProductBtn" class="btn-special" disabled>自定义商品</button>
+    <button id="petBtn" class="btn-special">💰赚钱（点我）</button>
+  </footer>
+
+  <!-- 登录/注册（图形自绘） -->
+  <div id="authModal" class="modal">
+    <div class="modal-content auth-box">
+      <h2 id="authTitle">登录</h2>
+      <form id="authForm">
+        <input type="text" id="username" placeholder="用户名" required/>
+        <input type="password" id="password" placeholder="密码" required/>
+        <button type="submit">登录</button>
+        <p class="switch-auth"><a href="#" id="switchAuthMode">没有账号？点击注册</a></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- 购物车 -->
+  <div id="cartModal" class="modal">
+    <div class="modal-content">
+      <h2>购物车</h2>
+      <div id="cartItems"></div>
+      <div class="cart-total">总计：¥<span id="cartTotal">0</span></div>
+      <div class="cart-actions">
+        <button id="clearCartBtn" class="btn-danger">清空</button>
+        <button id="closeCartBtn" class="btn-secondary">关闭</button>
+        <button id="checkoutBtn" class="btn-primary">去支付</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 支付 -->
+  <div id="paymentModal" class="modal">
+    <div class="modal-content">
+      <h2>选择付款方式</h2>
+      <div class="payment-options">
+        <div class="pay-btn" data-method="wechat">
+          <img src="assets/sprites/WeChat.png" alt="微信"/>
+          <span>微信支付</span>
+        </div>
+        <div class="pay-btn" data-method="alipay">
+          <span>支付宝</span>
+        </div>
+      </div>
+      <input type="password" id="payPassword" placeholder="支付密码（管理员彩蛋）"/>
+      <div class="payment-actions">
+        <button id="confirmPayBtn" class="btn-primary">确认支付</button>
+        <button id="cancelPayBtn" class="btn-secondary">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 自定义商品 -->
+  <div id="customProductModal" class="modal">
+    <div class="modal-content">
+      <h2>上架自定义商品</h2>
+      <form id="customProductForm">
+        <input type="text" id="customName" placeholder="商品名称" required/>
+        <input type="file" id="customImage" accept="image/*" required/>
+        <textarea id="customDescription" placeholder="商品简介" required></textarea>
+        <input type="number" id="customPrice" placeholder="价格" required/>
+        <input type="number" id="customMaxQuantity" placeholder="购买上限" min="1" value="10"/>
+        <select id="customSound">
+          <option value="">选择点击音效</option>
+          <option value="sfx_cardcollect.ogg">收集</option>
+          <option value="sfx_explosion.ogg">爆炸</option>
+          <option value="sfx_hitenemy.ogg">击中</option>
+          <option value="sfx_wartimer.ogg">战争计时器</option>
+          <option value="sfx_woosh.ogg">呼啸</option>
+          <option value="custom">自定义音效</option>
+        </select>
+        <input type="file" id="customSoundFile" accept="audio/*" style="display:none;"/>
+        <button type="submit">上架</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 赚钱页 -->
+  <div id="earnModal" class="modal">
+    <div class="modal-content earn-box">
+      <h2>点 pet 赚金币</h2>
+      <div id="petArea">
+        <img id="petImg" src="assets/sprites/mypet.png" alt="pet"/>
+      </div>
+      <div class="earn-stats">
+        <div>💰金币：<span id="earnCount">0</span></div>
+        <div>👆每次点击：<span id="perClick">1</span></div>
+        <div>🤖自动点击：<span id="autoClick">0</span>/秒</div>
+      </div>
+      <div class="earn-upgrades">
+        <button class="upgrade-btn" data-type="click">升级点击 (+1/次) 价格：<span id="clickPrice">10</span></button>
+        <button class="upgrade-btn" data-type="auto">购买自动 (+1/秒) 价格：<span id="autoPrice">50</span></button>
+        <button class="upgrade-btn" data-type="skin">更换皮肤 价格：<span id="skinPrice">100</span></button>
+      </div>
+      <button id="closeEarnBtn" class="btn-secondary">关闭</button>
+    </div>
+  </div>
+
+  <!-- QQ群 -->
+  <div id="qqModal" class="modal">
+    <div class="modal-content"><h2>加入群聊</h2><img src="assets/sprites/QQ.png" class="qq-image"/><button id="closeQQBtn" class="btn-primary">关闭</button></div>
+  </div>
+
+  <!-- 背景音乐 -->
+  <audio id="bgMusic" loop></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
